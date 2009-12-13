@@ -1,71 +1,63 @@
 %define		_class		Console
 %define		_subclass	Color
-%define		_status		beta
-%define		_pearname	%{_class}_%{_subclass}
+%define		upstream_name	%{_class}_%{_subclass}
 
-Summary:	Easily use ANSI console colors in your application
-Name:		php-pear-%{_pearname}
+Name:		php-pear-%{upstream_name}
 Version:	1.0.2
-Release:	%mkrel 5
+Release:	%mkrel 6
+Summary:	Easily use ANSI console colors in your application
 License:	PHP License
 Group:		Development/PHP
-Source0:	http://pear.php.net/get/%{_pearname}-%{version}.tar.bz2
 URL:		http://pear.php.net/package/Console_Color/
+Source0:	http://download.pear.php.net/package/%{upstream_name}-%{version}.tar.bz2
 Requires(post): php-pear
 Requires(preun): php-pear
 Requires:	php-pear
 BuildArch:	noarch
-BuildRequires:	dos2unix
-BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
+BuildRequires:	php-pear
+BuildRoot:	%{_tmppath}/%{name}-%{version}
 
 %description
 You can use Console_Color::convert to transform colorcodes like %%r
 into ANSI control codes. 'print Console_Color::convert("%%rHello
 World!%%n");' would print "Hello World" in red, for example.
 
-In PEAR status of this package is: %{_status}.
-
 %prep
 %setup -q -c
+mv package.xml %{upstream_name}-%{version}/%{upstream_name}.xml
 
 %install
 rm -rf %{buildroot}
 
-install -d -m 755 %{buildroot}%{_datadir}/pear/%{_class}
+cd %{upstream_name}-%{version}
+pear install --nodeps --packagingroot %{buildroot} %{upstream_name}.xml
+rm -rf %{buildroot}%{_datadir}/pear/.??*
 
-install -m 644 %{_pearname}-%{version}/*.php \
-    %{buildroot}%{_datadir}/pear/%{_class}
+rm -rf %{buildroot}%{_datadir}/pear/docs
+rm -rf %{buildroot}%{_datadir}/pear/tests
 
-install -d -m 755 %{buildroot}%{_datadir}/pear/packages
-install -m 644 package.xml %{buildroot}%{_datadir}/pear/packages/%{_pearname}.xml
-
-%post
-if [ "$1" = "1" ]; then
-	if [ -x %{_bindir}/pear -a -f %{_datadir}/pear/packages/%{_pearname}.xml ]; then
-		%{_bindir}/pear install --nodeps -r %{_datadir}/pear/packages/%{_pearname}.xml
-	fi
-fi
-if [ "$1" = "2" ]; then
-	if [ -x %{_bindir}/pear -a -f %{_datadir}/pear/packages/%{_pearname}.xml ]; then
-		%{_bindir}/pear upgrade -f --nodeps -r %{_datadir}/pear/packages/%{_pearname}.xml
-	fi
-fi
-
-%preun
-if [ "$1" = 0 ]; then
-	if [ -x %{_bindir}/pear -a -f %{_datadir}/pear/packages/%{_pearname}.xml ]; then
-		%{_bindir}/pear uninstall --nodeps -r %{_pearname}
-	fi
-fi
+install -d %{buildroot}%{_datadir}/pear/packages
+install -m 644 %{upstream_name}.xml %{buildroot}%{_datadir}/pear/packages
 
 %clean
 rm -rf %{buildroot}
 
+%post
+%if %mdkversion < 201000
+pear install --nodeps --soft --force --register-only \
+    %{_datadir}/pear/packages/%{upstream_name}.xml >/dev/null || :
+%endif
+
+%preun
+%if %mdkversion < 201000
+if [ "$1" -eq "0" ]; then
+    pear uninstall --nodeps --ignore-errors --register-only \
+        %{pear_name} >/dev/null || :
+fi
+%endif
+
 %files
 %defattr(-,root,root)
-%doc %{_pearname}-%{version}/examples/*
-%dir %{_datadir}/pear/%{_class}
-%{_datadir}/pear/%{_class}/*.php
-%{_datadir}/pear/packages/%{_pearname}.xml
-
-
+%doc %{upstream_name}-%{version}/examples
+%{_datadir}/pear/%{_class}
+%{_datadir}/pear/packages/%{upstream_name}.xml
