@@ -3,8 +3,8 @@
 %define		upstream_name	%{_class}_%{_subclass}
 
 Name:		php-pear-%{upstream_name}
-Version:	1.0.2
-Release:	%mkrel 6
+Version:	1.0.3
+Release:	%mkrel 1
 Summary:	Easily use ANSI console colors in your application
 License:	PHP License
 Group:		Development/PHP
