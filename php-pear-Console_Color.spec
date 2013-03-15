@@ -10,6 +10,7 @@ License:	PHP License
 Group:		Development/PHP
 URL:		http://pear.php.net/package/Console_Color/
 Source0:	http://download.pear.php.net/package/%{upstream_name}-%{version}.tar.bz2
+Source1:	php-pear-Console_Color.rpmlintrc
 Requires(post): php-pear
 Requires(preun): php-pear
 Requires:	php-pear
