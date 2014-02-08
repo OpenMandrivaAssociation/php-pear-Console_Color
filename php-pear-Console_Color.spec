@@ -4,7 +4,7 @@
 
 Name:		php-pear-%{upstream_name}
 Version:	1.0.3
-Release:	4
+Release:	5
 Summary:	Easily use ANSI console colors in your application
 License:	PHP License
 Group:		Development/PHP
