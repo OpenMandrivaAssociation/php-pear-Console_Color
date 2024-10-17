@@ -8,7 +8,7 @@ Version:	1.0.3
 Release:	14
 License:	PHP License
 Group:		Development/PHP
-Url:		http://pear.php.net/package/Console_Color/
+Url:		https://pear.php.net/package/Console_Color/
 Source0:	http://download.pear.php.net/package/%{upstream_name}-%{version}.tar.bz2
 Source1:	php-pear-Console_Color.rpmlintrc
 BuildArch:	noarch
